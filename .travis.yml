@@ -52,8 +52,8 @@ jobs:
     # run tests on a standard platform
     - go test -v covermode=count -coverprofile=coverage.out ./...
     # collect coverage
-    - "$HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken
-      $COVERALLS_TOKEN"
+    - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken
+      $COVERALLS_TOKEN
     # run tests with the race detector as well
     - go test -race -v ./...
 

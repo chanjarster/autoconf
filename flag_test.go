@@ -19,6 +19,7 @@ package autoconf
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -131,9 +132,9 @@ func TestFlagResolver_Resolve(t *testing.T) {
 		r.init(f)
 		err := r.Resolve(f)
 
-		wantErr := `invalid value "abc" for flag -i: parse error`
-		if err.Error() != wantErr {
-			t.Errorf("err = %s, want %s", err, wantErr)
+		wantErr := `invalid value "abc" for flag -i:`
+		if !strings.HasPrefix(err.Error(), wantErr) {
+			t.Errorf("err prefix = %s, want %s", err, wantErr)
 		}
 	})
 
