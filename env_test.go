@@ -141,9 +141,9 @@ func TestEnvResolver_Resolve(t *testing.T) {
 		r.init(f)
 		err := r.Resolve(f)
 
-		wantErr := `invalid value "abc" for env I: parse error`
-		if err.Error() != wantErr {
-			t.Errorf("err = %s, want %s", err, wantErr)
+		wantErr := `invalid value "abc" for env I:`
+		if !strings.HasPrefix(err.Error(), wantErr) {
+			t.Errorf("err prefix = %s, want %s", err, wantErr)
 		}
 
 	})
