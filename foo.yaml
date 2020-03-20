@@ -1,0 +1,10 @@
+i:  3
+ip: 3
+bar:
+  i:  3
+  ip: 3
+barp:
+  i:  3
+  ip: 3
+baz:
+  i int

@@ -1,0 +1,21 @@
+b: true
+bp: true
+f: 3
+fp: 3
+i: 3
+ip: 3
+i64: 3
+i64p: 3
+s: foo
+sp: foo
+uint: 3
+uintp: 3
+inner:
+  i: 3
+  ip: 3
+innerp:
+  i: 3
+  ip: 3
+inner2:
+  i: 3
+  ip: 3
