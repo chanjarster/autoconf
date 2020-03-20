@@ -58,24 +58,39 @@ redis:
   password: test
 ```
 
-Run:
+Noop:
 
 ```bash
-# Load from nothing
 ./example
-# Load from yaml
+```
+
+Load from yaml:
+
+```bash
+./example
+```
+
+Load from environment:
+
+```bash
 ./example -c conf.yaml
-# Load from env
+```
+
+Load from flag:
+
+```bash
 MYSQL_HOST=localhost ./example
-# Load from flag
-./example -mysql-host=localhost
-# Or put them together
+```
+
+Mix them together (flag takes the highest precedence, then environtment, then yaml file) :
+
+```bash
 MYSQL_PORT=3306 ./example -c conf.yaml -redis-host=localhost
 ```
 
 ## Supported types
 
-Complete list:
+Only the exported fields will be loaded. Support field types are:
 
 * `string`
 * `bool`
@@ -86,18 +101,30 @@ Complete list:
 * `float64`
 * `string`
 * struct
-* pointers to above types
-
-Only the exported fields will be loaded.
+* pointer to above types
 
 ## Name convention
 
- Autoconf load fields by convention. Example, for field path `Foo.Bar.BazBoom`:
+ Autoconf load fields by convention. Example, field `BazBoom` path is `Foo.Bar.BazBoom`:
 
-* flag name will be `-foo-bar-baz-boom`
-* env name will be `FOO_BAR_BAZ_BOOM`
+```go
+type bar struct {
+  BazBoom string
+}
+type foo struct {
+  Bar *bar
+}
+type Conf struct {
+  Foo *foo
+}
+```
 
-As Autoconf use `gopkg.in/yaml.v3`, so the field name appear in yaml file should be lowercase, unless you customized it the "yaml" name in the field tag:
+So the corresponding:
+
+* flag name is `-foo-bar-baz-boom`
+* env name is `FOO_BAR_BAZ_BOOM`
+
+As Autoconf use `gopkg.in/yaml.v3` to parse yaml, so the field name appear in yaml file should be lowercase, unless you customized it the "yaml" name in the field tag:
 
 ```yaml
 foo:
