@@ -18,38 +18,46 @@ language: go
 dist: bionic
 
 os:
-  - linux
-  - osx
+- linux
+- osx
+
 go:
-  - tip
-  - 1.14.x
-  - 1.13.x
-  - 1.12.x
-  - 1.11.x
-  - 1.10.x
-  - 1.9.x
+- tip
+- 1.14.x
+- 1.13.x
+- 1.12.x
+- 1.11.x
+- 1.10.x
+- 1.9.x
 
 matrix:
   allow_failures:
-    - tip
+  - tip
   fast_finish: true
 
 before_install:
-  - go get -t -v ./...
+- go get -t -v ./...
 
 jobs:
   include:
-    - stage: test
-      script:
-        # build test for supported platforms
-        - GOOS=linux go build
-        - GOOS=darwin go build
-        - GOOS=freebsd go build
-        - GOOS=windows go build
-        - GOARCH=386 go build
+  - stage: test
+    script:
+    #  build test for supported platforms
+    - GOOS=linux go build
+    - GOOS=darwin go build
+    - GOOS=freebsd go build
+    - GOOS=windows go build
+    - GOARCH=386 go build
+    - go get golang.org/x/tools/cmd/cover
+    - go get github.com/mattn/goveralls
+    # run tests on a standard platform
+    - go test -v covermode=count -coverprofile=coverage.out ./...
+    # collect coverage
+    - "$HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken
+      $COVERALLS_TOKEN"
+    # run tests with the race detector as well
+    - go test -race -v ./...
 
-        # run tests on a standard platform
-        - go test -v ./...
-
-        # run tests with the race detector as well
-        - go test -race -v ./...
+env:
+  global:
+    secure: VpXqZf25ERogYFoego0/An9l9GLDD79TEsi5t0dj3pSJMJsh18a8krnnweL61OIgxiT0DLsV3rM5ymPhE/1Ad/frIHsWH45Kz49+vXrawsAyjq5KZos5PTXp6lWGvtsi0mQkbJALxp1wnwIiYBBgexB/HJo3ysdVGYwDrhMTgJBWb7cMiwH7SkaUhxgcux78lou3yHxkJxzX2pUPGn621OfQyBteo5/9M28WfVAMovMd/HVbwLJSPlM5XYJ8iVtwIlZrjhM9nhj2l4MtgIOWTXMSueHu1OZC7i5f/UIaaT7x16qt/M9+DeP0a1tidxp4xIUX0ir55VoX0UdUh7ov7URXuvaeiBEgV7w5LU4QO8FQhOrPY8LMPgUS51PYZFlON57UpsD3at73Mwu+Bs4HjhYvohZkrLjcLxMvtrFP/g2Wwb6b0rVX8PGKB1UozzmcnCfUJDvzoS+kc0LEgvotqljYl6OxQi/Gv0RNbSn31EtD9bvBASlDqRqOv4SfWlSAOxD4gooqWrW7bvDiXxIQiaijA6Bybwbstx6wfsklvrJjgpI3STUmZ2p7X9slaPnqLaBX+TF6psusk4dHe4QoJSALLNl4o4J04/dvBx8ndhHinD/LN8XGDlpgrM0cdhYukuA9a7uX2dKaoLIEF8JeF9inlLWSyAGuGi97i5euAOI=
