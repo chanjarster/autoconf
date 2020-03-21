@@ -22,3 +22,5 @@ barp:
   ip: 3
 baz:
   i int
+d: 3s
+dp: 3s

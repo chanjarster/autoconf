@@ -101,6 +101,7 @@ Only the exported fields will be loaded. Support field types are:
 * `uint64`
 * `float64`
 * `string`
+* `time.Duration`, any string legal to `time.ParseDuration(string)`
 * struct
 * pointer to above types
 

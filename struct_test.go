@@ -17,6 +17,8 @@
 
 package autoconf
 
+import "time"
+
 //---
 // struct with exported fields
 
@@ -51,10 +53,14 @@ type outer struct {
 		I  int
 		Ip *int
 	}
+
+	D  time.Duration
+	Dp *time.Duration
 }
 
 //-----
 // struct with exported and unexported fields
+
 type bar struct {
 	i  int
 	ip *int
@@ -73,6 +79,9 @@ type foo struct {
 	Ip   *int
 	Bar  bar
 	BarP *bar
+
+	D  time.Duration
+	Dp *time.Duration
 
 	baz struct {
 		i int

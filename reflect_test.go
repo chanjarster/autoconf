@@ -21,8 +21,8 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
+	"time"
 )
-
 
 func Test_initStruct(t *testing.T) {
 
@@ -58,7 +58,7 @@ func Test_initStruct(t *testing.T) {
 		}
 	})
 
-	t.Run("non ptr", func(t *testing.T) {
+	t.Run("ptr", func(t *testing.T) {
 		p := &foo{}
 		initStruct(p)
 
@@ -69,6 +69,8 @@ func Test_initStruct(t *testing.T) {
 			barP: nil,
 			I:    0,
 			Ip:   new(int),
+			D:    0,
+			Dp:   new(time.Duration),
 			Bar: bar{
 				I:  0,
 				Ip: new(int),
@@ -110,7 +112,7 @@ func Test_visitExportedFields(t *testing.T) {
 		visP := &vis
 		visitExportedFields(f, visP.visit)
 
-		want := []string{"I", "Ip", "Bar.I", "Bar.Ip", "BarP.I", "BarP.Ip"}
+		want := []string{"I", "Ip", "Bar.I", "Bar.Ip", "BarP.I", "BarP.Ip", "D", "Dp"}
 		if !reflect.DeepEqual([]string(*visP), want) {
 			t.Errorf("visP = %v, want %v", *visP, want)
 		}

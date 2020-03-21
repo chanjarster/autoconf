@@ -33,3 +33,5 @@ innerp:
 inner2:
   i: 3
   ip: 3
+d: 3s
+dp: 3s
