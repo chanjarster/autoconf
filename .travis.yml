@@ -29,17 +29,18 @@ go:
 - 1.11.x
 - 1.10.x
 
-matrix:
-  allow_failures:
-  - tip
-  fast_finish: true
-
 before_install:
 - go get -t -v ./...
 
 jobs:
+  allow_failures:
+  - go: tip
+  
+  fast_finish: true
+  
   include:
-  - stage: test
+  - name: standard-platform
+    stage: test
     script:
     #  build test for supported platforms
     - GOOS=linux go build
@@ -50,13 +51,12 @@ jobs:
     - go get golang.org/x/tools/cmd/cover
     - go get github.com/mattn/goveralls
     # run tests on a standard platform
-    - go test -v covermode=count -coverprofile=coverage.out ./...
+    - go test -v -covermode=count -coverprofile=coverage.out ./...
     # collect coverage
-    - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken
-      $COVERALLS_TOKEN
+    - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-pro -repotoken $COVERALLS_TOKEN
     # run tests with the race detector as well
     - go test -race -v ./...
 
 env:
   global:
-    secure: VpXqZf25ERogYFoego0/An9l9GLDD79TEsi5t0dj3pSJMJsh18a8krnnweL61OIgxiT0DLsV3rM5ymPhE/1Ad/frIHsWH45Kz49+vXrawsAyjq5KZos5PTXp6lWGvtsi0mQkbJALxp1wnwIiYBBgexB/HJo3ysdVGYwDrhMTgJBWb7cMiwH7SkaUhxgcux78lou3yHxkJxzX2pUPGn621OfQyBteo5/9M28WfVAMovMd/HVbwLJSPlM5XYJ8iVtwIlZrjhM9nhj2l4MtgIOWTXMSueHu1OZC7i5f/UIaaT7x16qt/M9+DeP0a1tidxp4xIUX0ir55VoX0UdUh7ov7URXuvaeiBEgV7w5LU4QO8FQhOrPY8LMPgUS51PYZFlON57UpsD3at73Mwu+Bs4HjhYvohZkrLjcLxMvtrFP/g2Wwb6b0rVX8PGKB1UozzmcnCfUJDvzoS+kc0LEgvotqljYl6OxQi/Gv0RNbSn31EtD9bvBASlDqRqOv4SfWlSAOxD4gooqWrW7bvDiXxIQiaijA6Bybwbstx6wfsklvrJjgpI3STUmZ2p7X9slaPnqLaBX+TF6psusk4dHe4QoJSALLNl4o4J04/dvBx8ndhHinD/LN8XGDlpgrM0cdhYukuA9a7uX2dKaoLIEF8JeF9inlLWSyAGuGi97i5euAOI=
+    secure: "fM9+GT/EXA6yC3KP8LLsMLrduOgm7YnqHyCXxPN99R+xOxlhDOzzKzkZc0nHzYz1DAxsb7P7nqapAS61hpOEo9EsKTe0dQYdZSj/NRYXcnGqK+PWAfsFhnS/Je2isun3kY/rx+kF2y0y4jnNIn0tpQW8aHBEWqAxaLz7ls834CudQ5dA0ByYMBDw+TS3Fti9WAipQDlV6DGLWhknWQY1GE61anO3a90DtSHB78NX4rySLisr5Qs0HIOuhmcVt97KfxcLPLhQpHUnEqafWw42or66SMhLSG7kxRiuStB6Wrqc6ucXeBPcZjiAWQsmOI0AlF1ThJLH52GUsXEl8DNRwF2XLXD6SViHsxaOX/0z+7FPrbJ1s8pBA6IXhN+vk9shBRK8RYvWeOENnKa95JY/CwKbUzcuR05xBis2jILEhH98hcvGs92eTUESvxXwf6hWmJdEnj4jjvGE9ehLyDOyrrHIbqwr/PMDbI1v9kiGR9mkp15xtWujdU3S+F4I89sL4iBtH9IZ078JHXj/XRy5udqUtphBFMmOtGQ7XpN09GKRyYlXqz6wjqSEp/8r3YnL7NC9kFC/1gR6WKAyEn9xHcSc8Zp6vx5kzT99YFSlk7P0WldQrif+7H04ZtVuBOJeZPB7S6FLpPXGahuzch6zaJi05BB6QQpUw7fnLQCpmrc="
