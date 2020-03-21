@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"os"
 	"reflect"
+	"time"
 )
 
 type envResolver struct {
@@ -41,25 +42,32 @@ func (r *envResolver) init(p interface{}) {
 
 	visitExportedFields(p, func(path string, f reflect.StructField, v reflect.Value) {
 
-		env := envStyle(path)
-		r.environ = append(r.environ, env)
+		envName := envStyle(path)
+		r.environ = append(r.environ, envName)
 
-		switch k := v.Type().Kind(); k {
-		case reflect.Bool:
-			flagSet.BoolVar(v.Addr().Interface().(*bool), env, v.Bool(), path)
-		case reflect.Float64:
-			flagSet.Float64Var(v.Addr().Interface().(*float64), env, v.Float(), path)
-		case reflect.Int:
-			flagSet.IntVar(v.Addr().Interface().(*int), env, int(v.Int()), path)
-		case reflect.Int64:
-			flagSet.Int64Var(v.Addr().Interface().(*int64), env, v.Int(), path)
-		case reflect.String:
-			flagSet.StringVar(v.Addr().Interface().(*string), env, v.String(), path)
-		case reflect.Uint:
-			flagSet.UintVar(v.Addr().Interface().(*uint), env, uint(v.Uint()), path)
-		case reflect.Uint64:
-			flagSet.Uint64Var(v.Addr().Interface().(*uint64), env, v.Uint(), path)
+		vi := v.Addr().Interface()
+		vt := v.Type()
+		switch vt {
+		case reflect.TypeOf(time.Nanosecond):
+			flagSet.DurationVar(vi.(*time.Duration), envName, time.Duration(v.Int()), path)
 		default:
+			switch k := vt.Kind(); k {
+			case reflect.Bool:
+				flagSet.BoolVar(vi.(*bool), envName, v.Bool(), path)
+			case reflect.Float64:
+				flagSet.Float64Var(vi.(*float64), envName, v.Float(), path)
+			case reflect.Int:
+				flagSet.IntVar(vi.(*int), envName, int(v.Int()), path)
+			case reflect.Int64:
+				flagSet.Int64Var(vi.(*int64), envName, v.Int(), path)
+			case reflect.String:
+				flagSet.StringVar(vi.(*string), envName, v.String(), path)
+			case reflect.Uint:
+				flagSet.UintVar(vi.(*uint), envName, uint(v.Uint()), path)
+			case reflect.Uint64:
+				flagSet.Uint64Var(vi.(*uint64), envName, v.Uint(), path)
+			default:
+			}
 		}
 
 	})

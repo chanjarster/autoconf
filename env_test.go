@@ -22,6 +22,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestEnvResolver_Resolve(t *testing.T) {
@@ -50,6 +51,8 @@ func TestEnvResolver_Resolve(t *testing.T) {
 			"INNERP_IP=3",
 			"INNER2_I=3",
 			"INNER2_IP=3",
+			"D=3s",
+			"DP=3s",
 		}
 
 		setEnv(envs)
@@ -65,6 +68,7 @@ func TestEnvResolver_Resolve(t *testing.T) {
 		var e_i64 int64 = 3
 		var e_s = "foo"
 		var e_uint uint = 3
+		var e_d = 3 * time.Second
 
 		want := &outer{
 			B:     e_b,
@@ -94,6 +98,8 @@ func TestEnvResolver_Resolve(t *testing.T) {
 				I:  e_i,
 				Ip: &e_i,
 			},
+			D:  e_d,
+			Dp: &e_d,
 		}
 
 		if !reflect.DeepEqual(o, want) {

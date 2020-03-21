@@ -21,6 +21,7 @@ import (
 	"flag"
 	"os"
 	"reflect"
+	"time"
 )
 
 type flagResolver struct {
@@ -44,23 +45,32 @@ func (r *flagResolver) init(p interface{}) {
 
 		flagName := flagStyle(path)
 
-		switch k := v.Type().Kind(); k {
-		case reflect.Bool:
-			flagSet.BoolVar(v.Addr().Interface().(*bool), flagName, v.Bool(), path)
-		case reflect.Float64:
-			flagSet.Float64Var(v.Addr().Interface().(*float64), flagName, v.Float(), path)
-		case reflect.Int:
-			flagSet.IntVar(v.Addr().Interface().(*int), flagName, int(v.Int()), path)
-		case reflect.Int64:
-			flagSet.Int64Var(v.Addr().Interface().(*int64), flagName, v.Int(), path)
-		case reflect.String:
-			flagSet.StringVar(v.Addr().Interface().(*string), flagName, v.String(), path)
-		case reflect.Uint:
-			flagSet.UintVar(v.Addr().Interface().(*uint), flagName, uint(v.Uint()), path)
-		case reflect.Uint64:
-			flagSet.Uint64Var(v.Addr().Interface().(*uint64), flagName, v.Uint(), path)
+		vi := v.Addr().Interface()
+
+		vt := v.Type()
+		switch vt {
+		case reflect.TypeOf(time.Nanosecond):
+			flagSet.DurationVar(vi.(*time.Duration), flagName, time.Duration(v.Int()), path)
 		default:
+			switch k := vt.Kind(); k {
+			case reflect.Bool:
+				flagSet.BoolVar(vi.(*bool), flagName, v.Bool(), path)
+			case reflect.Float64:
+				flagSet.Float64Var(vi.(*float64), flagName, v.Float(), path)
+			case reflect.Int:
+				flagSet.IntVar(vi.(*int), flagName, int(v.Int()), path)
+			case reflect.Int64:
+				flagSet.Int64Var(vi.(*int64), flagName, v.Int(), path)
+			case reflect.String:
+				flagSet.StringVar(vi.(*string), flagName, v.String(), path)
+			case reflect.Uint:
+				flagSet.UintVar(vi.(*uint), flagName, uint(v.Uint()), path)
+			case reflect.Uint64:
+				flagSet.Uint64Var(vi.(*uint64), flagName, v.Uint(), path)
+			default:
+			}
 		}
+
 	})
 
 }

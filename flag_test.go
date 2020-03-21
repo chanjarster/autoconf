@@ -21,6 +21,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestFlagResolver_Resolve(t *testing.T) {
@@ -50,6 +51,8 @@ func TestFlagResolver_Resolve(t *testing.T) {
 				"-innerp-ip=3",
 				"-inner2-i=3",
 				"-inner2-ip=3",
+				"-d=3s",
+				"-dp=3s",
 			},
 		}
 
@@ -62,6 +65,7 @@ func TestFlagResolver_Resolve(t *testing.T) {
 		var e_i64 int64 = 3
 		var e_s = "foo"
 		var e_uint uint = 3
+		var e_d = 3 * time.Second
 
 		want := &outer{
 			B:     e_b,
@@ -84,13 +88,15 @@ func TestFlagResolver_Resolve(t *testing.T) {
 				I:  e_i,
 				Ip: &e_i,
 			},
-			Inner2:  struct {
+			Inner2: struct {
 				I  int
 				Ip *int
 			}{
 				I:  e_i,
 				Ip: &e_i,
 			},
+			D:  e_d,
+			Dp: &e_d,
 		}
 
 		if !reflect.DeepEqual(o, want) {

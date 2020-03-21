@@ -20,6 +20,7 @@ package autoconf
 import (
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestYamlFileResolver_Resolve(t *testing.T) {
@@ -41,6 +42,7 @@ func TestYamlFileResolver_Resolve(t *testing.T) {
 		var e_i64 int64 = 3
 		var e_s = "foo"
 		var e_uint uint = 3
+		var e_d = 3 * time.Second
 
 		want := &outer{
 			B:     e_b,
@@ -63,13 +65,15 @@ func TestYamlFileResolver_Resolve(t *testing.T) {
 				I:  e_i,
 				Ip: &e_i,
 			},
-			Inner2:  struct {
+			Inner2: struct {
 				I  int
 				Ip *int
 			}{
 				I:  e_i,
 				Ip: &e_i,
 			},
+			D:  e_d,
+			Dp: &e_d,
 		}
 
 		if !reflect.DeepEqual(o, want) {
@@ -89,7 +93,9 @@ func TestYamlFileResolver_Resolve(t *testing.T) {
 
 		y.Resolve(f)
 
-		i3 := 3
+		e_i := 3
+		e_d := 3 * time.Second
+
 		want := &foo{
 			i:  0,
 			ip: nil,
@@ -101,18 +107,18 @@ func TestYamlFileResolver_Resolve(t *testing.T) {
 			},
 			barP: nil,
 			I:    3,
-			Ip:   &i3,
+			Ip:   &e_i,
 			Bar: bar{
 				i:  0,
 				ip: nil,
 				I:  3,
-				Ip: &i3,
+				Ip: &e_i,
 			},
 			BarP: &bar{
 				i:  0,
 				ip: nil,
 				I:  3,
-				Ip: &i3,
+				Ip: &e_i,
 			},
 			baz: struct {
 				i int
@@ -124,10 +130,12 @@ func TestYamlFileResolver_Resolve(t *testing.T) {
 			}{
 				i: 0,
 			},
+			D:  e_d,
+			Dp: &e_d,
 		}
 
 		if !reflect.DeepEqual(f, want) {
-			t.Errorf("f = %v, want %v",f, want)
+			t.Errorf("f = %v, want %v", f, want)
 		}
 
 	})
